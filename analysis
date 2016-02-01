@@ -14,7 +14,7 @@ library(tidyr)
 
 
 # # # set data location and load
-datafile <- 'http://bingweb.binghamton.edu/~ghonke1/data/switch/switchrite_final.r')
+datafile <- 'http://bingweb.binghamton.edu/~ghonke1/data/switch/switchrite_final.csv')
 datafull <- read.csv(datafile, stringsAsFactors = FALSE)
 datafull$pid        <- as.factor(datafull$pid)
 datafull$shj_cond   <- as.factor(datafull$shj_cond)
