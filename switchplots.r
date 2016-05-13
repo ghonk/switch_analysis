@@ -1,6 +1,8 @@
 library(tikzDevice)
 library(ggplot2)
-
+library(gtable)
+library(grid)
+ 
 setwd('C://Users//garre//Dropbox//aa projects//switchrite//data//')
 datafile <- 'switchrite_final.csv'
 datafull <- read.csv(datafile, stringsAsFactors = FALSE)
@@ -9,44 +11,7 @@ training_data <- subset(datafull,
 
 cond_names <- c('classify' = 'Classify', 'switch' = 'Switch')
 
-multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
-  require(grid)
-
-  # Make a list from the ... arguments and plotlist
-  plots <- c(list(...), plotlist)
-
-  numPlots = length(plots)
-
-  # If layout is NULL, then use 'cols' to determine layout
-  if (is.null(layout)) {
-    # Make the panel
-    # ncol: Number of columns of plots
-    # nrow: Number of rows needed, calculated from # of cols
-    layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
-                    ncol = cols, nrow = ceiling(numPlots/cols))
-  }
-
- if (numPlots==1) {
-    print(plots[[1]])
-
-  } else {
-    # Set up the page
-    grid.newpage()
-    pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
-
-    # Make each plot, in the correct location
-    for (i in 1:numPlots) {
-      # Get the i,j matrix positions of the regions that contain this subplot
-      matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
-      
-      print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
-                                      layout.pos.col = matchidx$col))
-    }
-  }
-}
-
-
-tikz('classify_test.tex', width=3.7, height=3.6, pointsize=10, sanitize = TRUE)
+tikz('classify_test.tex', width = 3.3, height = 3, pointsize = 10, sanitize = TRUE)
 
 ggplot(aggregate(test_acc ~ train_cond + eg_type + pid, mean, 
     data = subset(datafull, subset = (phase == 'classify_test'))), 
@@ -67,14 +32,14 @@ ggplot(aggregate(test_acc ~ train_cond + eg_type + pid, mean,
     axis.text.y = element_text(size = 8, colour = 'black'),
     axis.text.x = element_text(size = 9.5, colour = 'black'),
     strip.text.x = element_text(size = 10, colour = 'black'), 
-    plot.margin = unit(c(0,1,.1,0), "cm")) +
+    plot.margin = unit(c(0,0,.1,0), "cm")) +
   scale_y_continuous(limits = c(0,1.00), breaks = seq(0, 1, 0.2), name = 'Mean Proportion Correct') +
   coord_cartesian(ylim = c(.03,.97))
 
 dev.off()
 
 
-tikz('inference_test.tex', width=3.7, height=3.6, pointsize=10, sanitize = TRUE)
+tikz('inference_test.tex', width = 3.3, height = 3, pointsize = 10, sanitize = TRUE)
 
 ggplot(aggregate(test_acc ~ train_cond + eg_type + pid, mean, 
     data = subset(datafull, subset = (phase == 'inference_test'))), 
@@ -95,14 +60,14 @@ ggplot(aggregate(test_acc ~ train_cond + eg_type + pid, mean,
     axis.text.y = element_text(size = 8, colour = 'black'),
     axis.text.x = element_text(size = 9.5, colour = 'black'),
     strip.text.x = element_text(size = 10, colour = 'black'), 
-    plot.margin = unit(c(0,1,.1,0), "cm")) +
+    plot.margin = unit(c(0,0,.1,0), "cm")) +
   scale_y_continuous(limits = c(0,1.00), breaks = seq(0, 1, 0.2), name = 'Mean Proportion Correct') +
   coord_cartesian(ylim = c(.03,.97))
 
 dev.off()
 
 
-tikz('switch_test.tex', width=3.7, height=3.6, pointsize=10, sanitize = TRUE)
+tikz('switch_test.tex', width = 2.5, height = 2.5, pointsize = 10, sanitize = TRUE)
 
 ggplot(aggregate(test_acc ~ train_cond + pid, mean, 
     data = subset(datafull, subset = (phase == 'switch_test'))), 
@@ -120,17 +85,17 @@ ggplot(aggregate(test_acc ~ train_cond + pid, mean,
     axis.text.y = element_text(size = 8, colour = 'black'),
     axis.text.x = element_text(size = 9.5, colour = 'black'),
     strip.text.x = element_text(size = 10, colour = 'black'), 
-    plot.margin = unit(c(0,1,.1,0), "cm"),
+    plot.margin = unit(c(0,0,.1,0), "cm"),
     legend.position = 'none') +
   scale_y_continuous(limits = c(0,1.00), breaks = seq(0, 1, 0.2), name = 'Mean Proportion Correct') +
   coord_cartesian(ylim = c(.03,.97))
 
 dev.off()
 
-
-tikz('training_fig.tex', width = 7, height = 3.5, pointsize = 10, sanitize = TRUE)
+tikz('training_fig.tex', width = 7, height = 3, pointsize = 10, sanitize = TRUE)
 
 training_data$shj_cond <- factor(training_data$shj_cond, c("two","three","four"))
+levels(training_data$shj_cond) <- c('II', 'III', 'IV')
 
 acc_x_block_plot_swi <- ggplot(data = aggregate(var_19 ~ block_num + shj_cond + pid,
     mean, data = subset(training_data, 
@@ -142,26 +107,41 @@ acc_x_block_plot_swi <- ggplot(data = aggregate(var_19 ~ block_num + shj_cond + 
   scale_fill_brewer('Category Type', palette = 'Purples') +
   theme(axis.text.y = element_text(size = 8, color = 'black'), axis.text.x = element_blank(),
     axis.title.y = element_text(size = 10), legend.title = element_blank(), 
-    legend.text = element_text(size = 16), 
-    legend.position = 'none',
-    plot.margin = unit(c(0,0,0,0), "cm")) 
+    legend.text = element_text(size = 16),
+    plot.margin = unit(c(0,0,0,0), "cm"))
 
 acc_x_block_plot_cla <- ggplot(data = aggregate(var_19 ~ block_num + shj_cond + pid,
     mean, data = subset(training_data, 
       subset = (trial_attempts == 1 & train_cond == 'classify'))), 
   aes(x = as.factor(block_num), y = var_19, fill = shj_cond)) + 
   geom_boxplot(outlier.colour = NA, lwd = 1, fatten = 1) +
-  scale_x_discrete(name = '') + scale_y_continuous(name = 'Classify', 
+  scale_x_discrete(name = 'Block Number') + scale_y_continuous(name = 'Classify', 
     limits = c(0,1.01), breaks = seq(0, 1, .25),) +
   scale_fill_brewer('Category Type', palette = 'Purples', breaks = c('II', 'III', 'IV')) +
   theme(axis.text.y = element_text(size = 8, color = 'black'), 
-    axis.text.x = element_text(size = 8, color = 'black'), 
-    axis.title.y = element_text(size = 10, vjust = 0.5), 
-    legend.text = element_text(size = 16), 
-    legend.position = 'none', 
-    plot.margin = unit(c(0,0,0,0), "cm")) 
+    axis.text.x = element_text(size = 8, color = 'black'),
+    axis.title.x = element_text(size = 10, color = 'black', margin = margin(10,0,0,20)), 
+    axis.title.y = element_text(size = 10),  
+    plot.margin = unit(c(.2,0,0,0), "cm")) 
 
-multiplot(acc_x_block_plot_swi,
-          acc_x_block_plot_cla, cols = 1)
+gt1 <- ggplot_gtable(ggplot_build(acc_x_block_plot_swi))
+gt2 <- ggplot_gtable(ggplot_build(acc_x_block_plot_cla))
+
+gt <- gtable(widths = unit(c(4, 1), "null"), height = unit(c(1, 1), "null"))
+gt <- gtable_add_grob(gt, gt1[, -5], 1, 1)
+gt <- gtable_add_grob(gt, gt2[, -5], 2, 1)
+gt <- gtable_add_grob(gt, gt1[, 5], 1, 2, 2)
+
+grid.newpage()
+grid.draw(gt)
 
 dev.off()
+
+
+
+
+
+
+
+
+
