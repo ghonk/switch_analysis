@@ -67,7 +67,7 @@ ggplot(aggregate(test_acc ~ train_cond + eg_type + pid, mean,
 dev.off()
 
 
-tikz('switch_test.tex', width = 3, height = 2.5, pointsize = 10, sanitize = TRUE)
+tikz('switch_test.tex', width = 3, height = 2.2, pointsize = 10, sanitize = TRUE)
 
 ggplot(aggregate(test_acc ~ train_cond + pid, mean, 
     data = subset(datafull, subset = (phase == 'switch_test'))), 
@@ -93,13 +93,13 @@ ggplot(aggregate(test_acc ~ train_cond + pid, mean,
   scale_y_continuous(limits = c(0,1.00), breaks = seq(0, 1, 0.2), name = 'Mean Proportion Correct') +
   coord_cartesian(ylim = c(.03,.97))
 
- 
 dev.off()
+
 
 training_data$shj_cond <- factor(training_data$shj_cond, c("two","three","four"))
 levels(training_data$shj_cond) <- c('II', 'III', 'IV')
 
-tikz('training_fig.tex', width = 7.75, height = 3, pointsize = 10, sanitize = TRUE)
+tikz('training_fig.tex', width = 7.5, height = 3, pointsize = 10, sanitize = TRUE)
 
 acc_x_block_plot_swi <- ggplot(data = aggregate(var_19 ~ block_num + shj_cond + pid,
     mean, data = subset(training_data, 
