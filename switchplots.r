@@ -53,7 +53,7 @@ ggplot(aggregate(test_acc ~ train_cond + eg_type + pid, mean,
   facet_grid(. ~ train_cond, labeller = as_labeller(cond_names)) +
   scale_colour_manual('task', guide = FALSE, values = c('classify' = 'black','switch' = 'black')) +
   scale_fill_manual('task',  guide = FALSE, values = c('classify' = 'light grey','switch' = 'light grey')) +
-  scale_x_discrete(name = '', breaks = c('full', 'partial'), labels = c('One\nFeature', 'Two\nFeatures')) + 
+  scale_x_discrete(name = '', breaks = c('full', 'partial'), labels = c('Two\nFeatures', 'One\nFeature')) + 
   theme(plot.title = element_blank(),
     axis.title.y = element_text(size = 9.5, colour = 'black'),
     axis.title.x = element_blank(),
