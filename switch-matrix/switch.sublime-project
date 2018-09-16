@@ -1,0 +1,17 @@
+{
+	"folders":
+	[
+		{
+
+			"file_exclude_patterns":
+			[
+				"*.sublime-workspace",
+				"Rplots.pdf",
+				".Rapp.history",
+				".Rhistory"
+			],
+
+			"path": "."
+		}
+	]
+}
